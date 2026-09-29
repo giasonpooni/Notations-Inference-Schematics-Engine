@@ -46,11 +46,14 @@ def compile_schematic(catalog: dict, query: dict) -> dict:
             capability = node["attributes"]["semantic_capability"]
             operation_nodes.setdefault(capability, []).append(node["node_id"])
 
+    # Relevance expansion is not execution/dataflow traversal. A directional
+    # relation retains its orientation in E_q, but either endpoint can make the
+    # other relevant to an investigation (e.g. suspected cause -> observed
+    # effect must be discoverable when starting from the effect).
     adjacency = {node_id: [] for node_id in nodes}
     for edge in catalog["edges"]:
         adjacency[edge["source"]].append((edge["target"], edge))
-        if not edge["directional"]:
-            adjacency[edge["target"]].append((edge["source"], edge))
+        adjacency[edge["target"]].append((edge["source"], edge))
 
     seed_reasons: dict[str, str] = {node_id: "focus" for node_id in query["focus_node_ids"]}
     unresolved = []
