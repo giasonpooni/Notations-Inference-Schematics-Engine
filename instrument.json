@@ -1,0 +1,96 @@
+{
+  "schema": "notations.instrument.v1",
+  "identity": {
+    "name": "Notations Inference Schematics Engine",
+    "slug": "nise",
+    "version": "0.1.0",
+    "maturity": "EXPERIMENT",
+    "brand": "Notation Systems",
+    "positioning": "Frontier Tooling and Instrumentation for Digital Futures"
+  },
+  "operation": {
+    "id": "nise.construct.v1",
+    "semantic_capability": "inference.schematic.construct.v1",
+    "purpose": "Construct a bounded candidate inference schematic from an explicit system catalog and query contract.",
+    "deterministic_given_inputs": true,
+    "kind": "compute",
+    "effects": [
+      "read:system-catalog",
+      "write:candidate-schematic"
+    ]
+  },
+  "provider": {
+    "id": "org.notationsystems.nise",
+    "runtime_family": "python",
+    "execution_profile": "orchestration",
+    "execution_mode": "headless",
+    "resources": [
+      "cpu"
+    ],
+    "priority": 100,
+    "ports": {
+      "inputs": {
+        "catalog": {
+          "schema": "nise.system-catalog.v1",
+          "unit": null,
+          "frame": null
+        },
+        "query": {
+          "schema": "nise.query.v1",
+          "unit": null,
+          "frame": null
+        }
+      },
+      "outputs": {
+        "schematic": {
+          "schema": "nise.inference-schematic.v1",
+          "unit": null,
+          "frame": null
+        }
+      }
+    }
+  },
+  "implementation": {
+    "language": "Python",
+    "runtime": "CPython 3.11+",
+    "distribution": "notations-inference-schematics-engine",
+    "module": "nise",
+    "command": "nise",
+    "network_required": false,
+    "hardware_required": false
+  },
+  "model": {
+    "family": "bounded-explicit-graph-expansion",
+    "query_text_role": "retained-context-only-in-v1",
+    "max_hops": 6,
+    "max_selected_nodes": 256,
+    "epistemic_statuses": [
+      "OBSERVED",
+      "DERIVED",
+      "DECLARED",
+      "HYPOTHESIZED"
+    ]
+  },
+  "inputs": {
+    "system_catalog": "typed nodes/edges with explicit epistemic status and evidence identities",
+    "query": "explicit focus identities, requested semantic capabilities and bounded traversal policy"
+  },
+  "outputs": {
+    "inference_schematic": "candidate partitions V_q,E_q,M_q,C_q,O_q,P_q with selection trace/frontier",
+    "truth_claim": "none"
+  },
+  "verification": {
+    "report_schema": "notations.verification.v1",
+    "canonical_specimen": "examples/bearing_catalog.json + examples/bearing_query.json"
+  },
+  "representations": {
+    "readme": "README.md",
+    "architecture": "docs/ARCHITECTURE.md"
+  },
+  "limits": [
+    "V1 does not perform natural-language semantic retrieval.",
+    "NISE does not establish physical truth or causality.",
+    "NISE does not execute scientific providers or estimate state.",
+    "NISE does not admit evidence, merge source, release artifacts, or authorize physical actuation."
+  ]
+}
