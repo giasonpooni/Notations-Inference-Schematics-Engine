@@ -1,0 +1,173 @@
+{
+  "schema": "nise.system-catalog.v1",
+  "catalog_id": "bearing-demo-v1",
+  "nodes": [
+    {
+      "node_id": "bearing_04",
+      "kind": "ENTITY",
+      "label": "Bearing 04",
+      "status": "DECLARED",
+      "attributes": {
+        "asset_class": "rolling-element-bearing"
+      },
+      "evidence_refs": []
+    },
+    {
+      "node_id": "bearing_04.vibration",
+      "kind": "STATE_VARIABLE",
+      "label": "Bearing vibration",
+      "status": "DECLARED",
+      "attributes": {
+        "unit": "m/s^2"
+      },
+      "evidence_refs": []
+    },
+    {
+      "node_id": "accelerometer.obs-17",
+      "kind": "OBSERVATION",
+      "label": "Accelerometer observation 17",
+      "status": "OBSERVED",
+      "attributes": {
+        "quantity": "vibration"
+      },
+      "evidence_refs": [
+        "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      ]
+    },
+    {
+      "node_id": "wear.model",
+      "kind": "MODEL",
+      "label": "Bearing wear residual model",
+      "status": "DECLARED",
+      "attributes": {
+        "family": "state-space"
+      },
+      "evidence_refs": [
+        "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      ]
+    },
+    {
+      "node_id": "operating.limit",
+      "kind": "CONSTRAINT",
+      "label": "Operating vibration limit",
+      "status": "DECLARED",
+      "attributes": {
+        "kind": "upper-bound"
+      },
+      "evidence_refs": [
+        "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+      ]
+    },
+    {
+      "node_id": "op.spectrum",
+      "kind": "OPERATION",
+      "label": "Spectrum analysis",
+      "status": "DECLARED",
+      "attributes": {
+        "semantic_capability": "signal.spectrum.v1"
+      },
+      "evidence_refs": []
+    },
+    {
+      "node_id": "op.state-estimate",
+      "kind": "OPERATION",
+      "label": "State estimation",
+      "status": "DECLARED",
+      "attributes": {
+        "semantic_capability": "state.estimate.v1"
+      },
+      "evidence_refs": []
+    },
+    {
+      "node_id": "bearing_04.hidden-damage",
+      "kind": "STATE_VARIABLE",
+      "label": "Possible hidden damage",
+      "status": "HYPOTHESIZED",
+      "attributes": {
+        "unit": "1"
+      },
+      "evidence_refs": []
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "e1",
+      "source": "bearing_04",
+      "target": "bearing_04.vibration",
+      "relation": "has_state",
+      "status": "DECLARED",
+      "directional": true,
+      "evidence_refs": [],
+      "attributes": {}
+    },
+    {
+      "edge_id": "e2",
+      "source": "accelerometer.obs-17",
+      "target": "bearing_04.vibration",
+      "relation": "observes",
+      "status": "OBSERVED",
+      "directional": true,
+      "evidence_refs": [
+        "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      ],
+      "attributes": {}
+    },
+    {
+      "edge_id": "e3",
+      "source": "wear.model",
+      "target": "bearing_04.vibration",
+      "relation": "models",
+      "status": "DECLARED",
+      "directional": true,
+      "evidence_refs": [
+        "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      ],
+      "attributes": {}
+    },
+    {
+      "edge_id": "e4",
+      "source": "operating.limit",
+      "target": "bearing_04.vibration",
+      "relation": "constrains",
+      "status": "DECLARED",
+      "directional": true,
+      "evidence_refs": [
+        "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+      ],
+      "attributes": {}
+    },
+    {
+      "edge_id": "e5",
+      "source": "op.spectrum",
+      "target": "bearing_04.vibration",
+      "relation": "consumes",
+      "status": "DECLARED",
+      "directional": false,
+      "evidence_refs": [],
+      "attributes": {}
+    },
+    {
+      "edge_id": "e6",
+      "source": "op.state-estimate",
+      "target": "wear.model",
+      "relation": "evaluates",
+      "status": "DECLARED",
+      "directional": false,
+      "evidence_refs": [],
+      "attributes": {}
+    },
+    {
+      "edge_id": "e7",
+      "source": "bearing_04.hidden-damage",
+      "target": "bearing_04.vibration",
+      "relation": "may_cause",
+      "status": "HYPOTHESIZED",
+      "directional": true,
+      "evidence_refs": [],
+      "attributes": {}
+    }
+  ],
+  "metadata": {
+    "scope": "synthetic demonstration; not a physical diagnosis"
+  }
+}
