@@ -105,3 +105,62 @@ def test_inspection_is_data_only_summary():
     assert inspection["schematic_id"] == result["schematic_id"]
     assert inspection["physical_truth_established"] is False
     assert inspection["execution_authority"] is False
+
+
+@pytest.mark.parametrize("budget", [1, 2, 3, 4])
+def test_disconnected_requested_seeds_are_all_selected_or_accounted_for(budget):
+    catalog = load("bearing_catalog.json")
+    catalog["edges"] = []
+    query = load("bearing_query.json")
+    query["focus_node_ids"] = ["bearing_04", "bearing_04.vibration"]
+    query["requested_capabilities"] = ["signal.spectrum.v1", "state.estimate.v1"]
+    query["max_hops"] = 0
+    query["node_budget"] = budget
+    result = compile_schematic(catalog, query)
+    selected = {row["node_id"] for row in result["selection_trace"]}
+    seeds = {"bearing_04", "bearing_04.vibration", "op.spectrum", "op.state-estimate"}
+    blocked = {row["node_id"] for row in result["frontier"] if row["blocked_by"] == "node_budget"}
+    assert len(selected) == budget
+    assert blocked == seeds - selected
+    assert set(result["unresolved_capabilities"]) == {
+        capability for node_id, capability in [
+            ("op.spectrum", "signal.spectrum.v1"),
+            ("op.state-estimate", "state.estimate.v1"),
+        ] if node_id not in selected
+    }
+    reordered = deepcopy(catalog)
+    reordered["nodes"].reverse()
+    assert compile_schematic(reordered, query)["selection_trace"] == result["selection_trace"]
+    assert compile_schematic(reordered, query)["frontier"] == result["frontier"]
+
+
+def test_requested_hypothesized_operation_is_explicitly_blocked_and_unresolved():
+    catalog = load("bearing_catalog.json")
+    catalog["edges"] = []
+    for node in catalog["nodes"]:
+        if node["node_id"] == "op.spectrum":
+            node["status"] = "HYPOTHESIZED"
+    query = load("bearing_query.json")
+    query["requested_capabilities"] = ["signal.spectrum.v1"]
+    result = compile_schematic(catalog, query)
+    assert result["unresolved_capabilities"] == ["signal.spectrum.v1"]
+    assert result["frontier"] == [{"node_id": "op.spectrum", "blocked_by": "hypothesis_policy"}]
+    query["include_hypotheses"] = True
+    result = compile_schematic(catalog, query)
+    assert result["unresolved_capabilities"] == []
+    assert result["P_q"][0]["node_id"] == "op.spectrum"
+
+
+def test_capability_with_an_eligible_implementation_is_resolved_despite_blocked_alternative():
+    catalog = load("bearing_catalog.json")
+    catalog["edges"] = []
+    alternative = deepcopy(next(node for node in catalog["nodes"] if node["node_id"] == "op.spectrum"))
+    alternative["node_id"] = "op.spectrum-hypothesis"
+    alternative["status"] = "HYPOTHESIZED"
+    catalog["nodes"].append(alternative)
+    query = load("bearing_query.json")
+    query["requested_capabilities"] = ["signal.spectrum.v1"]
+    result = compile_schematic(catalog, query)
+    assert result["unresolved_capabilities"] == []
+    assert {node["node_id"] for node in result["P_q"]} == {"op.spectrum"}
+    assert result["frontier"] == [{"node_id": "op.spectrum-hypothesis", "blocked_by": "hypothesis_policy"}]

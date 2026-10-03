@@ -47,7 +47,10 @@ V1 is intentionally deterministic and non-linguistic:
 5. Apply the explicit hypothesis policy.
 6. Stop at `node_budget`, retaining blocked frontier nodes/reasons.
 7. Partition selected nodes into V/M/C/O/P.
-8. Retain the selection trace and unresolved capability IDs.
+8. Retain the selection trace and unresolved capability IDs. Every requested
+   operation or focus seed omitted by the budget is recorded in the frontier;
+   requested operation seeds excluded by hypothesis policy are recorded too. A
+   capability remains unresolved unless an eligible matching operation is selected.
 9. Content-address the complete schematic.
 
 The human question string is retained for context but does not drive selection in

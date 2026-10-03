@@ -56,14 +56,14 @@ def compile_schematic(catalog: dict, query: dict) -> dict:
         adjacency[edge["target"]].append((edge["source"], edge))
 
     seed_reasons: dict[str, str] = {node_id: "focus" for node_id in query["focus_node_ids"]}
-    unresolved = []
+    frontier: dict[tuple[str, str], dict] = {}
     for capability in query["requested_capabilities"]:
         matches = sorted(operation_nodes.get(capability, []))
-        if not matches:
-            unresolved.append(capability)
-            continue
         for node_id in matches:
             if nodes[node_id]["status"] == "HYPOTHESIZED" and not query["include_hypotheses"]:
+                frontier[(node_id, "hypothesis_policy")] = {
+                    "node_id": node_id, "blocked_by": "hypothesis_policy"
+                }
                 continue
             seed_reasons.setdefault(node_id, "requested_capability")
 
@@ -72,12 +72,14 @@ def compile_schematic(catalog: dict, query: dict) -> dict:
     reason: dict[str, str] = {}
     for node_id in sorted(seed_reasons):
         if len(depth) >= query["node_budget"]:
-            break
+            frontier[(node_id, "node_budget")] = {
+                "node_id": node_id, "blocked_by": "node_budget"
+            }
+            continue
         depth[node_id] = 0
         reason[node_id] = seed_reasons[node_id]
         queue.append(node_id)
 
-    frontier: dict[tuple[str, str], dict] = {}
     while queue:
         current = queue.popleft()
         current_depth = depth[current]
@@ -107,6 +109,10 @@ def compile_schematic(catalog: dict, query: dict) -> dict:
             queue.append(target)
 
     selected = set(depth)
+    unresolved = [
+        capability for capability in query["requested_capabilities"]
+        if not any(node_id in selected for node_id in operation_nodes.get(capability, []))
+    ]
     selected_edges = []
     for edge in catalog["edges"]:
         if edge["source"] not in selected or edge["target"] not in selected:
