@@ -45,12 +45,14 @@ This repository is newly initialized; implementation work proceeds on reviewable
 
 ## Organization
 
-**Notation Systems Inc** is the parent organization.
+**Notation Systems Inc** is the parent organization: a scientific computing and systems engineering company developing computational instruments, software and interactive environments for understanding and building physical and virtual systems.
+
+The company's development direction connects measurement, state estimation and sensor fusion, scientific modelling, simulation and execution, from materials and machines to interactive worlds.
 
 | Division | Focus |
 | --- | --- |
-| **Notations Gaming** | Games, graphics and interactive worlds. |
-| **Notations Manufacturing** | Industrial design, materials and manufacturing systems. |
-| **Notations Laboratories** | Research, scientific computing, simulation and experimental validation. |
+| **Notations Gaming** | Games, graphics, world building, interactive environments and gameplay simulation. |
+| **Notations Manufacturing** | Design, machinery integration, process development, fabrication and production systems. |
+| **Notations Laboratories** | Research and experimental validation in scientific computing, measurement, physics and chemistry modelling, materials and simulation. |
 
-This repository is shared **Notation Systems Inc** tooling for candidate investigation structure, supporting scientific workflows across all three divisions.
+**Repository role:** This repository documents NISE's shared **Notation Systems Inc** role in constructing candidate investigations connecting systems, observations, models, constraints and instruments. It supports the company's broader physical and virtual systems direction while NET retains session composition, execution and distinct evidence, operation, execution and verification identities.
