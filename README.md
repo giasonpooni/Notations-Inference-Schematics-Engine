@@ -2,7 +2,7 @@
 
 **Constructs query-specific inference graphs connecting physical systems, observations, models, constraints, uncertainty, and scientific instruments.**
 
-NISE is a Notation Systems instrument for building **candidate investigation structure**. It answers:
+NISE is a Notation Systems Inc instrument for building **candidate investigation structure**. It answers:
 
 > What parts of the system, evidence, models, constraints and computational machinery are relevant to investigating this question?
 
@@ -42,3 +42,15 @@ retained executions and results
 FrameMapper owns representation of known state. State-estimation instruments own state inference. NET owns execution/composition. NISE owns candidate investigation structure.
 
 This repository is newly initialized; implementation work proceeds on reviewable branches.
+
+## Organization
+
+**Notation Systems Inc** is the parent organization.
+
+| Division | Focus |
+| --- | --- |
+| **Notations Gaming** | Games, graphics and interactive worlds. |
+| **Notations Manufacturing** | Industrial design, materials and manufacturing systems. |
+| **Notations Laboratories** | Research, scientific computing, simulation and experimental validation. |
+
+This repository is shared **Notation Systems Inc** tooling for candidate investigation structure, supporting scientific workflows across all three divisions.
